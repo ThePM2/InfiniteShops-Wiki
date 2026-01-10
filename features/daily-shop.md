@@ -89,15 +89,15 @@ rarity_distribution:
 
 ### Rarity Colors
 
-| Rarity | Display |
-|--------|---------|
-| COMMON | &7⚫ COMMON |
-| UNCOMMON | &a⚫ UNCOMMON |
-| RARE | &b⚫ RARE |
-| EPIC | &5⚫ EPIC |
-| LEGENDARY | &6✦ LEGENDARY |
-| MYTHIC | &d✦ MYTHIC |
-| SPECIAL | &c★ SPECIAL |
+| Rarity | Display Tag | Color |
+|--------|-------------|-------|
+| COMMON | &7[COMMON] | Gray |
+| UNCOMMON | &a[UNCOMMON] | Green |
+| RARE | &b[RARE] | Aqua |
+| EPIC | &5[EPIC] | Purple |
+| LEGENDARY | &6[LEGENDARY] | Gold |
+| MYTHIC | &d[MYTHIC] | Light Purple |
+| SPECIAL | &c[SPECIAL] | Red |
 
 ---
 

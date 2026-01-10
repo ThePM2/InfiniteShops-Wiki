@@ -21,104 +21,101 @@ Create a new file in `plugins/InfiniteShops/shops/`:
 ```yaml
 # shops/blocks.yml
 
-# Shop display settings
-title: '&2&lBlocks Shop'
-rows: 6
-
-# Menu layout (optional)
-menu:
-  - 'YYYYYYYYY'
-  - 'Y       Y'
-  - 'Y       Y'
-  - 'Y       Y'
-  - 'Y       Y'
-  - 'YYYYYYYYY'
-
-# Border items
-replaces:
-  Y: GREEN_STAINED_GLASS_PANE
+# Shop category settings
+name: '&2&lBlocks Shop'
+size: 54  # Inventory size in slots (9, 18, 27, 36, 45, or 54)
+category_display_item: GRASS_BLOCK  # Icon shown in main menu
+lore:
+  - ''
+  - '&a➼ &fOpen the Blocks shop'
+  - ''
 
 # Shop items
 items:
-  dirt:
-    material: DIRT
+  dirt1:
+    itemType: ITEM
+    display_item:
+      type: DIRT
+      amount: 1
     slot: 10
-    amount: 64
-    buy_price: 10
-    sell_price: 5
-    ecoType: VAULT
+    show: true
+    item:
+      type: DIRT
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 10.0
+      sellPrice: 5.0
 ```
 
 ---
 
 ## Item Configuration
 
-### Basic Item
+### Basic Sellable Item
 
 ```yaml
 items:
-  diamond:
-    material: DIAMOND
+  diamond1:
+    itemType: ITEM
+    display_item:
+      type: DIAMOND
+      amount: 1
     slot: 13
-    buy_price: 1000
-    sell_price: 500
-    ecoType: VAULT
+    show: true
+    item:
+      type: DIAMOND
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 1000.0
+      sellPrice: 500.0
 ```
 
-### Advanced Item with Custom Display
+### Item with Custom Display Name and Lore
 
 ```yaml
 items:
-  special_sword:
-    # The actual item given to player
-    material: DIAMOND_SWORD
+  special_sword1:
+    itemType: ITEM
+    display_item:
+      type: DIAMOND_SWORD
+      amount: 1
+      display_name: '&b&lFrost Blade'
+      lore:
+        - '&7A legendary blade of ice'
+        - ''
+        - '&eClick to purchase!'
     slot: 22
-    amount: 1
-    
-    # Custom display settings
-    display_name: '&b&lFrost Blade'
-    lore:
-      - '&7A legendary blade of ice'
-      - ''
-      - '&eClick to purchase!'
-    
-    # Enchantments
-    enchantments:
-      SHARPNESS: 5
-      UNBREAKING: 3
-    
-    # Economy settings
-    buy_price: 50000
-    sell_price: null  # Cannot be sold
-    ecoType: VAULT
-    
-    # Item flags
-    item_flags:
-      - HIDE_ENCHANTS
-      - HIDE_ATTRIBUTES
+    show: true
+    item:
+      type: DIAMOND_SWORD
+      amount: 1
+      display_name: '&b&lFrost Blade'
+      lore:
+        - '&7A legendary blade of ice'
+      enchants:
+        1:
+          enchant: SHARPNESS
+          level: 5
+        2:
+          enchant: UNBREAKING
+          level: 3
+    shop:
+      ecoType: VAULT
+      buyPrice: 50000.0
+      sellPrice: null  # Cannot be sold (use null or omit)
 ```
 
-### Item with Commands
+### Item Types
 
-```yaml
-items:
-  vip_rank:
-    material: NETHER_STAR
-    slot: 13
-    display_name: '&6&lVIP Rank'
-    lore:
-      - '&7Purchase VIP status!'
-      - ''
-      - '&eBuy Price: &6$10,000'
-    buy_price: 10000
-    ecoType: VAULT
-    
-    # Execute commands on purchase
-    commands:
-      - 'lp user %player% parent set vip'
-      - 'broadcast &a%player% &7purchased &6VIP&7!'
-    command_executor: CONSOLE  # or PLAYER
-```
+| itemType | Description |
+|----------|-------------|
+| `ITEM` | Standard buyable/sellable item |
+| `BUTTON` | Navigation button (opens menus, runs commands) |
+| `FILLER` | Decorative item (glass panes, etc.) |
+| `COMMAND` | Executes commands on purchase |
+| `ENCHANT` | Enchantment book item |
 
 ---
 
@@ -134,160 +131,217 @@ InfiniteShops supports multiple economy types per item:
 | `CUSTOM` | Custom currency | `500 Gems` |
 | `PLAYERPOINTS` | PlayerPoints plugin | `100 Points` |
 | `TOKENENCHANT` | TokenEnchant tokens | `50 Tokens` |
+| `OR` | Either currency option | `$500 OR 10 Diamonds` |
+| `AND` | Both currencies required | `$500 AND 10 Diamonds` |
 
 ### Using EXP as Currency
 
 ```yaml
 items:
-  enchanted_book:
-    material: ENCHANTED_BOOK
+  enchanted_book1:
+    itemType: ITEM
+    display_item:
+      type: ENCHANTED_BOOK
+      amount: 1
     slot: 10
-    buy_price: 30
-    ecoType: EXP
-    level: true  # Use levels instead of points
+    show: true
+    item:
+      type: ENCHANTED_BOOK
+      amount: 1
+    shop:
+      ecoType: EXP
+      buyPrice: 30.0
 ```
 
 ### Using Items as Currency
 
 ```yaml
 items:
-  beacon:
-    material: BEACON
+  beacon1:
+    itemType: ITEM
+    display_item:
+      type: BEACON
+      amount: 1
     slot: 13
-    buy_price: 64
-    sell_price: 32
-    ecoType: ITEM
-    currency_material: DIAMOND  # Pay with diamonds
-```
-
-### Combined Economy (AND/OR)
-
-```yaml
-items:
-  legendary_item:
-    material: NETHERITE_SWORD
-    slot: 13
-    ecoType: AND  # Requires BOTH
-    prices:
-      - type: VAULT
-        amount: 100000
-      - type: ITEM
-        material: NETHER_STAR
-        amount: 5
+    show: true
+    item:
+      type: BEACON
+      amount: 1
+    shop:
+      ecoType: ITEM
+      buyPrice: 64.0
+      sellPrice: 32.0
+      # Currency item defined in currencies configuration
 ```
 
 ---
 
-## Shop Categories
+## Navigation Buttons
 
-Create a main menu that links to other shops:
+### Opening Other Shop Categories
 
 ```yaml
-# shops/main.yml
-title: '&8&lShop Categories'
-rows: 3
-
 items:
-  blocks:
-    material: GRASS_BLOCK
+  blocks_button:
+    itemType: BUTTON
+    display_item:
+      type: GRASS_BLOCK
+      amount: 1
+      display_name: '&a&lBlocks'
+      lore:
+        - ''
+        - '&7Click to open the Blocks shop'
+        - ''
     slot: 10
-    display_name: '&a&lBlocks'
-    lore:
-      - '&7Buy building materials'
-    action: OPEN_SHOP
-    value: blocks
-    
-  tools:
-    material: DIAMOND_PICKAXE
+    show: true
+    button:
+      action: OPEN_MENU
+      value: blocks  # Shop file name without .yml
+
+  tools_button:
+    itemType: BUTTON
+    display_item:
+      type: DIAMOND_PICKAXE
+      amount: 1
+      display_name: '&b&lTools'
+      lore:
+        - ''
+        - '&7Click to open the Tools shop'
+        - ''
     slot: 12
-    display_name: '&b&lTools'
-    lore:
-      - '&7Buy tools and equipment'
-    action: OPEN_SHOP
-    value: tools
-    
-  food:
-    material: COOKED_BEEF
-    slot: 14
-    display_name: '&6&lFood'
-    lore:
-      - '&7Buy food items'
-    action: OPEN_SHOP
-    value: food
+    show: true
+    button:
+      action: OPEN_MENU
+      value: tools
 ```
 
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot of a shop category menu with icons for different shop types. Dimensions: 600x400px -->
+### Button Actions
+
+| Action | Description |
+|--------|-------------|
+| `OPEN_MENU` | Open another shop category |
+| `PLAYER_COMMAND` | Run command as player |
+| `CONSOLE_COMMAND` | Run command as console |
+| `CLOSE` | Close the menu |
+| `SEARCH` | Open search interface |
+
+### Navigation with Player Heads
+
+```yaml
+items:
+  next_category:
+    itemType: BUTTON
+    display_item:
+      type: PLAYER_HEAD
+      skin: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2M2MDJkYmE5Zjk3MDFhZTAwMzllNzQ4MWNlYmY2MWM1OGZlOGQzOWQyOWM5MjdiNDg4YmVlNDIyZDlhNjJkNCJ9fX0=
+      display_name: '&a⇨ &fNext Category'
+      lore:
+        - ''
+        - '&a➼ &fOpen the Farm shop'
+        - ''
+      amount: 1
+    slot: 8
+    show: true
+    button:
+      action: OPEN_MENU
+      value: farm
+```
+
+---
+
+## Filler Items (Decorations)
+
+```yaml
+items:
+  glass_border:
+    itemType: FILLER
+    display_item:
+      type: BLACK_STAINED_GLASS_PANE
+      amount: 1
+      display_name: ' '
+    slot:
+      - '0'
+      - '8'
+      - '45'
+      - '53'
+    show: true
+```
 
 ---
 
 ## Click Actions
 
-Configure what happens when players click items:
-
-### Default Actions
+Configure what happens when players click items in `config.yml`:
 
 ```yaml
-# In config.yml
-shop_actions:
-  LEFT:
-    action: BUY
-    identifier: 'Left click:'
-    description: 'Buy %amount% for %price%'
-  RIGHT:
-    action: SELL
-    identifier: 'Right click:'
-    description: 'Sell %amount% for %price%'
-  SHIFT_LEFT:
-    action: BUY_STACK
-    identifier: 'Shift + Left:'
-    description: 'Buy 64 for %price%'
-  SHIFT_RIGHT:
-    action: SELL_ALL
-    identifier: 'Shift + Right:'
-    description: 'Sell all for %price%'
+actions:
+  ITEM:
+    LEFT:
+      action: OPEN_MULTIPLE_BUY
+      identifier: 'Left click:'
+      description: 'Open buy multiple'
+    RIGHT:
+      action: OPEN_MULTIPLE_SELL
+      identifier: 'Right click:'
+      description: 'Open sell multiple'
+    SHIFT_LEFT:
+      action: SELL_ALL
+      identifier: 'Shift-Left Click:'
+      description: 'Sell all'
 ```
 
 ### Available GUI Actions
 
 | Action | Description |
 |--------|-------------|
-| `BUY` | Buy the item amount |
-| `SELL` | Sell the item amount |
-| `BUY_STACK` | Buy a full stack (64) |
-| `SELL_ALL` | Sell all matching items |
-| `OPEN_SHOP` | Open another shop |
-| `PLAYER_COMMAND` | Run command as player |
-| `CONSOLE_COMMAND` | Run command as console |
-| `CLOSE` | Close the menu |
+| `BUY` | Buy the item |
+| `SELL` | Sell the item |
+| `SELL_ALL` | Sell all matching items from inventory |
+| `OPEN_MULTIPLE_BUY` | Open quantity selection for buying |
+| `OPEN_MULTIPLE_SELL` | Open quantity selection for selling |
+| `BUY_STACKS` | Open stack buying menu |
+| `SELL_STACKS` | Open stack selling menu |
+| `EXIT` | Close the menu |
+| `BACK` | Go back to previous menu |
 
 ---
 
 ## Multi-Page Shops
 
-For shops with many items, pagination is automatic:
+For shops with many items, use navigation buttons to link pages:
 
 ```yaml
-title: '&8All Items'
-rows: 6
-
-# Pagination buttons (auto-placed on last row)
-pagination:
-  next:
-    material: ARROW
-    name: '&aNext Page →'
-  previous:
-    material: ARROW
-    name: '&c← Previous Page'
-  
+# shops/blocks.yml - Page 1
 items:
-  # Define many items - pages are created automatically
-  item1:
-    material: STONE
-    buy_price: 1
-  item2:
-    material: COBBLESTONE
-    buy_price: 2
-  # ... more items
+  next_page:
+    itemType: BUTTON
+    display_item:
+      type: PLAYER_HEAD
+      skin: eyJ0ZXh0dXJlcy...  # Arrow texture
+      display_name: '&a⇨ &fGo to next page'
+      amount: 1
+    slot: 52
+    show: true
+    button:
+      action: OPEN_MENU
+      value: blocks2  # Links to blocks2.yml
+```
+
+```yaml
+# shops/blocks2.yml - Page 2
+items:
+  previous_page:
+    itemType: BUTTON
+    display_item:
+      type: PLAYER_HEAD
+      skin: eyJ0ZXh0dXJlcy...  # Arrow texture
+      display_name: '&a⇦ &fGo to previous page'
+      amount: 1
+    slot: 50
+    show: true
+    button:
+      action: OPEN_MENU
+      value: blocks
 ```
 
 <!-- 📸 GIF PLACEHOLDER: Animation showing pagination in action - clicking next/previous page buttons. Dimensions: 600x400px -->
@@ -296,24 +350,25 @@ items:
 
 ## Preview System
 
-Allow players to preview items before purchasing:
+Allow players to preview items before purchasing. Configure in `config.yml`:
 
 ```yaml
-# In config.yml
-preview:
-  enabled: true
-  name: '&aPreview item'
-  name_shulker: '&5Preview shulker content'
-  size: 5
-  menu:
-    - 'LY     YL'
-    - 'Y       Y'
-    - 'L       L'
-    - 'Y       Y'
-    - 'LY     YL'
-  replaces:
-    Y: YELLOW_STAINED_GLASS_PANE
-    L: LIME_STAINED_GLASS_PANE
+player_item_frame:
+  preview:
+    name: '&aPreview item'
+    name_shulker: '&5Preview shulker content'
+    size: 5
+    menu:
+      - 'LY     YL'
+      - 'Y       Y'
+      - 'L       L'
+      - 'Y       Y'
+      - 'LY     YL'
+    replaces:
+      Y: YELLOW_STAINED_GLASS_PANE
+      L: LIME_STAINED_GLASS_PANE
+    single_item_slot: 22
+    shulker_preview: [2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 40]
 ```
 
 ---
@@ -330,13 +385,131 @@ Players can search for items across all shops:
 
 ---
 
+## Complete Shop Example
+
+```yaml
+# shops/tools.yml
+name: '&7&m   &7] &6&lTools &7[&m   '
+size: 54
+category_display_item: DIAMOND_PICKAXE
+lore:
+  - ''
+  - '&a➼ &fOpen the Tools shop'
+  - ''
+
+items:
+  # Navigation
+  previous_category:
+    itemType: BUTTON
+    display_item:
+      type: PLAYER_HEAD
+      skin: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGUxZGZjMTFhODM3MTExZDIyYjAwMWExNDQ2MWY5YTdmYzA5MzUyMmY4OGM1OGZhZWZkNmFkZWZmY2Q0ZTlhYiJ9fX0=
+      display_name: '&a⇦ &fPrevious Category'
+      amount: 1
+    slot: 0
+    show: true
+    button:
+      action: OPEN_MENU
+      value: blocks
+
+  next_category:
+    itemType: BUTTON
+    display_item:
+      type: PLAYER_HEAD
+      skin: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2M2OWQ0MTA3NmE4ZGVhNGYwNmQzZjFhOWFjNDdjYzk5Njk4OGI3NGEwOTEzYWIyYWMxYTc0Y2FmNzA4MTkxOCJ9fX0=
+      display_name: '&a⇨ &fNext Category'
+      amount: 1
+    slot: 8
+    show: true
+    button:
+      action: OPEN_MENU
+      value: food
+
+  # Decorative border
+  border:
+    itemType: FILLER
+    display_item:
+      type: GRAY_STAINED_GLASS_PANE
+      amount: 1
+      display_name: ' '
+    slot:
+      - '1'
+      - '7'
+    show: true
+
+  # Shop items
+  wooden_pickaxe1:
+    itemType: ITEM
+    display_item:
+      type: WOODEN_PICKAXE
+      amount: 1
+    slot: 18
+    show: true
+    item:
+      type: WOODEN_PICKAXE
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 50.0
+      sellPrice: 5.0
+
+  stone_pickaxe1:
+    itemType: ITEM
+    display_item:
+      type: STONE_PICKAXE
+      amount: 1
+    slot: 19
+    show: true
+    item:
+      type: STONE_PICKAXE
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 100.0
+      sellPrice: 10.0
+
+  iron_pickaxe1:
+    itemType: ITEM
+    display_item:
+      type: IRON_PICKAXE
+      amount: 1
+    slot: 20
+    show: true
+    item:
+      type: IRON_PICKAXE
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 500.0
+      sellPrice: 50.0
+
+  diamond_pickaxe1:
+    itemType: ITEM
+    display_item:
+      type: DIAMOND_PICKAXE
+      amount: 1
+    slot: 21
+    show: true
+    item:
+      type: DIAMOND_PICKAXE
+      amount: 1
+    shop:
+      ecoType: VAULT
+      buyPrice: 2500.0
+      sellPrice: 250.0
+```
+
+---
+
 ## Tips & Best Practices
 
-1. **Organize by category** - Create logical shop groupings
-2. **Use consistent pricing** - Sell prices should be lower than buy prices
-3. **Add visual borders** - Use glass panes for professional look
-4. **Include descriptions** - Help players understand items
-5. **Test thoroughly** - Verify all items work correctly
+1. **Use unique item names** - Add numbers or suffixes to item keys (e.g., `dirt1`, `stone1`)
+2. **Always include `itemType`** - Required for all items
+3. **Use `show: true`** - Items won't display without this
+4. **Match display_item and item** - Keep them consistent for clarity
+5. **Use camelCase for prices** - `buyPrice` and `sellPrice`, not `buy_price`
+6. **Wrap prices in `shop:` section** - Required structure for economy settings
+7. **Test after changes** - Use `/ishop reload` to apply changes
 
 ---
 

@@ -39,8 +39,8 @@ Main admin command hub.
 |---------|-------------|
 | `/ishop reload` | Reload all configuration files |
 | `/ishop editor` | Open the in-game shop editor |
-| `/ishop create <name>` | Create a new shop category |
-| `/ishop delete <name>` | Delete a shop category |
+| `/ishop create <n>` | Create a new shop category |
+| `/ishop delete <n>` | Delete a shop category |
 | `/ishop list` | List all shop categories |
 
 <!-- 📸 GIF PLACEHOLDER: Animation showing the in-game shop editor in action. Dimensions: 600x400px -->
@@ -58,6 +58,11 @@ Main admin command hub.
 | `/blackmarket status` | View current status | `infiniteshops.blackmarket.admin` |
 | `/blackmarket toggle <setting>` | Toggle settings | `infiniteshops.blackmarket.admin` |
 
+### Toggle Options
+- `auction` - Toggle auction mode
+- `broadcast` - Toggle purchase broadcasts
+- `autoopen` - Toggle auto-open GUI
+
 **Aliases**: `/bm`, `/blackm`
 
 ---
@@ -68,12 +73,9 @@ Main admin command hub.
 |---------|-------------|------------|
 | `/dailyshop` | Open Daily Shop | `infiniteshops.dailyshop.use` |
 | `/dailyshop help` | Show help menu | `infiniteshops.dailyshop.use` |
-| `/dailyshop stats` | View your statistics | `infiniteshops.dailyshop.use` |
-| `/dailyshop history` | View purchase history | `infiniteshops.dailyshop.use` |
 | `/dailyshop preview` | Preview upcoming items | `infiniteshops.dailyshop.vip` |
 | `/dailyshop reload` | Reload configuration | `infiniteshops.dailyshop.admin` |
-| `/dailyshop reset <type>` | Reset items (daily/weekly/all) | `infiniteshops.dailyshop.admin` |
-| `/dailyshop toggle` | Enable/disable shop | `infiniteshops.dailyshop.admin` |
+| `/dailyshop reset` | Reset shop items | `infiniteshops.dailyshop.admin` |
 
 **Aliases**: `/ds`, `/dshop`
 
@@ -81,17 +83,44 @@ Main admin command hub.
 
 ## NPC Commands
 
+Requires **Citizens** plugin.
+
 | Command | Description |
 |---------|-------------|
-| `/ishop npc create` | Open NPC creation menu |
-| `/ishop npc create <type> <shop> [name]` | Quick create NPC |
-| `/ishop npc link <shop>` | Link selected NPC to shop |
-| `/ishop npc unlink` | Remove shop link from NPC |
-| `/ishop npc list` | View all NPC shops |
-| `/ishop npc remove <id>` | Remove an NPC |
-| `/ishop npc settings` | Open NPC settings GUI |
-| `/ishop npc type <entityType>` | Change NPC entity type |
-| `/ishop npc teleport <id>` | Teleport to NPC |
+| `/ishop npc` | Show NPC help |
+| `/ishop npc create <name>` | Create an NPC with name |
+| `/ishop npc create <name> -c` | Create NPC centered on block |
+| `/ishop npc create <name> -t <type>` | Create NPC with entity type |
+| `/ishop npc create <name> -c -t <type>` | Create centered NPC with type |
+
+### NPC Creation Options
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| `-c` | Center NPC on block | `/ishop npc create Shopkeeper -c` |
+| `-t <type>` | Set entity type | `/ishop npc create Guard -t ZOMBIE` |
+
+### Full Syntax
+```bash
+/ishop npc create <name> -c(center/optional) -t(entity type/optional)
+```
+
+### Examples
+```bash
+# Create a basic NPC named "Merchant"
+/ishop npc create Merchant
+
+# Create centered NPC
+/ishop npc create Merchant -c
+
+# Create a Villager NPC
+/ishop npc create Villager_Shop -t VILLAGER
+
+# Create centered Zombie NPC
+/ishop npc create Undead_Trader -c -t ZOMBIE
+```
+
+After creating an NPC, use the settings GUI to configure the shop link and appearance.
 
 ---
 
@@ -99,26 +128,34 @@ Main admin command hub.
 
 | Command | Description |
 |---------|-------------|
-| `/ishop sign create <type>` | Create a sign shop |
-| `/ishop sign set <option> <value>` | Set sign option |
-| `/ishop sign info` | View sign information |
-| `/ishop sign remove` | Remove sign shop |
-| `/ishop sign command add <cmd>` | Add command to sign |
-| `/ishop sign command remove <index>` | Remove command |
-| `/ishop sign command list` | List all commands |
+| `/ishop sign command add <command>` | Add command to sign |
+| `/ishop sign command remove <index>` | Remove command by index |
+| `/ishop sign command list` | List all commands on sign |
+| `/ishop sign info <signType>` | View sign type information |
 
-### Sign Set Options
+### Sign Command Syntax
+```bash
+/ishop sign command add <command>
+/ishop sign command remove <command>
+/ishop sign command list
+/ishop sign info <signType>
+```
 
-| Option | Values | Description |
-|--------|--------|-------------|
-| `material` | Any material | Item being traded |
-| `amount` | Number | Quantity per transaction |
-| `buyPrice` | Number | Price to buy |
-| `sellPrice` | Number | Price to sell |
-| `ecoType` | VAULT/EXP/ITEM/CUSTOM | Economy type |
-| `displayItem` | Any material | Displayed item |
-| `level` | true/false | Use XP levels |
-| `commandExecutor` | PLAYER/CONSOLE | Who runs commands |
+### Sign Types
+Use `/ishop sign info <type>` to learn about each type:
+
+| Type | Description |
+|------|-------------|
+| `ADMIN_SHOP` | Buy and sell with unlimited stock |
+| `ADMIN_SELL` | Sell only with unlimited stock |
+| `ADMIN_BUY` | Buy only with unlimited stock |
+| `PLAYER_SHOP` | Player-owned buy/sell shop |
+| `PLAYER_SELL` | Player-owned sell shop |
+| `PLAYER_BUY` | Player-owned buy shop |
+| `COMMAND` | Execute commands on click |
+| `FREE` | Free item distribution |
+| `DISPOSAL` | Item disposal sign |
+| `ENCHANT` | Enchantment service |
 
 ---
 
@@ -141,10 +178,8 @@ Main admin command hub.
 
 | Command | Description |
 |---------|-------------|
-| `/ishop loot create <name>` | Create new loot config |
+| `/ishop loot create <n>` | Create new loot config |
 | `/ishop loot open <loot> [player]` | Open a loot crate |
-| `/ishop loot give <loot> <player> [amount]` | Give loot keys |
-| `/ishop loot preview <loot>` | Preview possible rewards |
 | `/ishop loot reload` | Reload loot configurations |
 
 ---
@@ -153,13 +188,11 @@ Main admin command hub.
 
 | Command | Description |
 |---------|-------------|
-| `/ishop currency <name> balance` | Check your balance |
-| `/ishop currency <name> balance <player>` | Check player's balance |
-| `/ishop currency <name> give <player> <amount>` | Give currency |
-| `/ishop currency <name> take <player> <amount>` | Take currency |
-| `/ishop currency <name> set <player> <amount>` | Set balance |
-| `/ishop currency <name> top` | View leaderboard |
-| `/ishop currency <name> withdraw <amount>` | Withdraw to item |
+| `/ishop currency <n> balance` | Check your balance |
+| `/ishop currency <n> balance <player>` | Check player's balance |
+| `/ishop currency <n> give <player> <amount>` | Give currency |
+| `/ishop currency <n> take <player> <amount>` | Take currency |
+| `/ishop currency <n> set <player> <amount>` | Set balance |
 
 ---
 
@@ -180,11 +213,9 @@ Main admin command hub.
 
 | Command | Description |
 |---------|-------------|
-| `/ishop rank` | View your shopper rank |
-| `/ishop rank <player>` | View player's rank |
-| `/ishop rank top` | View leaderboard |
-| `/ishop rank set <player> <rank>` | Set player's rank (admin) |
-| `/ishop rank reset <player>` | Reset player's progress (admin) |
+| `/ishop rank info` | View your shopper rank |
+| `/ishop rank info <player>` | View player's rank |
+| `/ishop rank progress` | View progress to next level |
 
 ---
 

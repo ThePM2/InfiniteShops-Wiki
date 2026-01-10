@@ -1,264 +1,305 @@
 # 🌙 Black Market
 
-A thrilling auction-based shop that appears during special events!
+Create timed auction events with exclusive deals and bidding systems!
 
 ---
 
 ## Overview
 
-The Black Market is a timed event system where players can bid on exclusive items. It creates excitement and engagement through competitive bidding and limited-time availability.
+The Black Market is a special shop system that offers limited-time items with optional auction mechanics. Items rotate on a timer, creating urgency and excitement for players.
 
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot of the Black Market GUI showing an auction in progress with current bid, time remaining, and item display. Dimensions: 800x500px -->
-
----
-
-## How It Works
-
-1. **Event Starts** - The Black Market opens (manually or automatically)
-2. **Items Rotate** - Exclusive items appear one at a time
-3. **Players Bid** - Compete for items by placing bids
-4. **Auction Ends** - Highest bidder wins the item
-5. **Event Ends** - All items have been auctioned
-
-<!-- 📸 GIF PLACEHOLDER: Animation showing the complete auction flow - bidding, countdown, and winning. Dimensions: 700x450px -->
+<!-- 📸 IMAGE PLACEHOLDER: Screenshot of the Black Market GUI with timer and exclusive items. Dimensions: 800x500px -->
 
 ---
 
-## Configuration
+## Configuration Files
 
-### Main Settings
+The Black Market uses two configuration files:
 
-Edit `plugins/InfiniteShops/blackmarket/config.yml`:
+| File | Purpose |
+|------|---------|
+| `blackmarket/blackmarket.yml` | Main settings and items |
+| `blackmarket/blackmarket-auction.yml` | Auction-specific settings |
+
+---
+
+## Main Configuration
+
+### blackmarket/blackmarket.yml
 
 ```yaml
 # Black Market Configuration
 
-# Enable/disable the feature
-enabled: true
+# Automatically open GUI when event starts
+auto_open_gui: true
 
-# Automatic opening settings
-auto_open:
-  enabled: true
-  # Open on full moon nights (Minecraft time)
-  full_moon: true
-  # Or use scheduled times
-  schedule:
-    enabled: false
-    times:
-      - "20:00"  # 8 PM daily
-      - "SATURDAY-14:00"  # Saturday 2 PM
+# Broadcast purchases to server
+broadcast_purchases: true
 
-# Event duration settings
-duration:
-  # Time per item (seconds)
-  item_duration: 60
-  # Countdown warning times
-  warnings: [30, 10, 5, 3, 2, 1]
+# Skip to next item when current is purchased
+skip_on_purchase: false
 
-# Bidding settings
-bidding:
-  # Minimum starting bid
-  min_bid: 100
-  # Minimum bid increment
-  min_increment: 10
-  # Maximum bid (0 = unlimited)
-  max_bid: 0
-  
-# Broadcast settings
-broadcast:
-  enabled: true
-  # Announce new items
-  new_item: true
-  # Announce bids
-  bids: true
-  # Announce winners
-  winners: true
-```
+# How long each item is available (seconds)
+item_duration: 30
 
-### Adding Items
+# Number of items per event
+items_per_event: 5
 
-Create item files in `plugins/InfiniteShops/blackmarket/items/`:
+# Auction Mode Settings
+auction_mode:
+  enabled: false
+  starting_price: 1000.0
+  bid_increase_percent: 5.0
+  bid_reset_time: 5  # seconds
+  one_item_per_server: true
+  limit_purchases: false
 
-```yaml
-# items/legendary_sword.yml
+# Messages
+messages:
+  event_start: "&6&l[BLACK MARKET] &eThe Black Market has opened!"
+  event_end: "&6&l[BLACK MARKET] &cThe Black Market has closed."
+  no_event: "&cThe Black Market is not open right now."
+  already_purchased: "&cYou have already purchased from this Black Market!"
+  insufficient_funds: "&cYou don't have enough money for this item!"
 
-# Item configuration
-item:
-  material: NETHERITE_SWORD
-  name: '&6&l⚔ Legendary Blade'
-  lore:
-    - '&7A sword of immense power'
-    - ''
-    - '&eDamage: &c+15'
-    - '&eRarity: &6LEGENDARY'
-  enchantments:
-    SHARPNESS: 10
-    UNBREAKING: 5
-    FIRE_ASPECT: 2
+# Items Configuration
+items:
+  special_sword:
+    type: ITEM
+    price: 5000.0
+    weight: 1
+    max_stock: 1
+    use_auction_price: true
+    item:
+      material: DIAMOND_SWORD
+      amount: 1
+      name: "&6&lBlack Market Sword"
+      lore:
+        - "&7A mysterious sword from the"
+        - "&7depths of the black market."
+        - ""
+        - "&6Special Edition"
+      enchants:
+        1:
+          enchant: SHARPNESS
+          level: 5
+        2:
+          enchant: UNBREAKING
+          level: 3
 
-# Auction settings
-auction:
-  starting_bid: 50000
-  min_increment: 1000
-  
-# Rarity affects appearance frequency
-rarity: LEGENDARY
+  mystery_command:
+    type: COMMAND
+    price: 3000.0
+    weight: 2
+    commands:
+      - "give %player% diamond 64"
+      - "msg %player% &aYou received a mystery reward!"
+    display_item:
+      material: ENDER_CHEST
+      name: "&d&lMystery Box"
+      lore:
+        - "&7What could be inside?"
+        - "&7Only one way to find out!"
 
-# Weight for random selection (higher = more common)
-weight: 1
+  rare_shop_item:
+    type: SHOP_ITEM
+    price: 10000.0
+    weight: 1
+    shop_category: "your_category_id"
+    shop_item: "your_item_id"
+    display_item:
+      material: NETHER_STAR
+      name: "&b&lRare Shop Item"
+      lore:
+        - "&7Normally unavailable item"
+        - "&7from the shop!"
 ```
 
 ---
 
-## Admin Commands
+## Item Types
+
+| Type | Description |
+|------|-------------|
+| `ITEM` | Physical item given to player |
+| `COMMAND` | Executes commands on purchase |
+| `SHOP_ITEM` | References an item from another shop |
+
+### ITEM Type
+
+```yaml
+items:
+  legendary_armor:
+    type: ITEM
+    price: 25000.0
+    weight: 1
+    max_stock: 1
+    use_auction_price: true
+    item:
+      material: NETHERITE_CHESTPLATE
+      amount: 1
+      name: "&5&lShadow Armor"
+      lore:
+        - "&7Forged in darkness"
+      enchants:
+        1:
+          enchant: PROTECTION
+          level: 4
+        2:
+          enchant: UNBREAKING
+          level: 3
+```
+
+### COMMAND Type
+
+```yaml
+items:
+  vip_package:
+    type: COMMAND
+    price: 50000.0
+    weight: 1
+    commands:
+      - "lp user %player% parent set vip"
+      - "eco give %player% 10000"
+      - "broadcast &6%player% &epurchased a VIP package!"
+    display_item:
+      material: NETHER_STAR
+      name: "&6&lVIP Package"
+      lore:
+        - "&7Includes:"
+        - "&a• VIP Rank"
+        - "&a• $10,000 bonus"
+```
+
+### SHOP_ITEM Type
+
+```yaml
+items:
+  shop_exclusive:
+    type: SHOP_ITEM
+    price: 15000.0
+    weight: 2
+    shop_category: "tools"
+    shop_item: "enchanted_pickaxe1"
+    display_item:
+      material: DIAMOND_PICKAXE
+      name: "&b&lExclusive Tool"
+```
+
+---
+
+## Weight System
+
+Weights determine how often items appear:
+
+```yaml
+items:
+  common_item:
+    weight: 5    # More likely to appear
+    
+  rare_item:
+    weight: 1    # Less likely to appear
+```
+
+Higher weight = more frequent appearance in the rotation.
+
+---
+
+## Auction Configuration
+
+### blackmarket/blackmarket-auction.yml
+
+```yaml
+# Auction Settings
+auction:
+  enabled: true
+  starting_price: 100.0
+  minimum_increment: 10.0
+  increment_percent: 5.0
+  use_percentage_increment: true
+  bid_reset_time: 5  # seconds added when bid placed
+  minimum_bidders: 2
+  require_minimum_bidders: false
+  one_item_per_server: true
+  limit_wins_per_event: true
+  max_wins_per_player: 3
+  allow_auto_bid: false
+  max_auto_bid_amount: 100000.0
+
+# Anti-Snipe Protection
+anti_snipe:
+  enabled: true
+  threshold_seconds: 10
+  extension_seconds: 5
+
+# Reserve Prices (minimum selling price)
+reserve_price:
+  enabled: false
+  items:
+    special_sword: 10000.0
+    mystery_command: 5000.0
+    rare_shop_item: 20000.0
+
+# Bidding Requirements
+requirements:
+  require_permission: false
+  bid_permission: "infiniteshops.blackmarket.bid"
+  minimum_balance: 1000.0
+  show_bidder_names: true
+  anonymous_bidding: false
+
+# Notifications
+notifications:
+  notify_on_outbid: true
+  notify_on_new_bid: false
+  sound_on_bid: true
+  sound_on_win: true
+  bid_sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+  win_sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# Visual Effects
+visual_effects:
+  particles_enabled: true
+  firework_on_win: true
+  glowing_item_display: true
+  animated_timer: true
+
+# Messages
+messages:
+  bid_success: "&aYou have successfully bid &e$%amount%&a!"
+  bid_fail: "&cYour bid of &e$%amount% &cfailed: %reason%"
+  outbid: "&c%player% has outbid you with &e$%amount%&c!"
+  win: "&a&lCongratulations! You won %item% for &e$%amount%&a!"
+  lose: "&cYou did not win this auction. Better luck next time!"
+  reserve_not_met: "&cThe reserve price was not met. Item will not be sold."
+  minimum_bidders_not_met: "&cMinimum bidders requirement not met."
+  auction_start: "&6&lAUCTION: &e%item% &6starting at &e$%price%"
+  auction_end: "&6&lAUCTION ENDED: &e%item% &6sold to &e%winner% &6for &e$%amount%"
+  last_call: "&c&lLAST CALL! &e%seconds%s remaining!"
+  going_once: "&6Going once for &e$%amount%&6..."
+  going_twice: "&6Going twice for &e$%amount%&6..."
+  sold: "&a&lSOLD! &6to &e%player% &6for &e$%amount%&6!"
+```
+
+---
+
+## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/blackmarket` | Open the Black Market menu |
-| `/blackmarket start` | Force start an event |
-| `/blackmarket stop` | Force stop the current event |
+| `/blackmarket` | Open the Black Market GUI |
+| `/blackmarket start` | Start a Black Market event |
+| `/blackmarket stop` | End the current event |
 | `/blackmarket reload` | Reload configuration |
 | `/blackmarket status` | View current event status |
 | `/blackmarket toggle <setting>` | Toggle settings |
 
-### Status Information
+### Toggle Options
 
 ```
-/blackmarket status
-```
-
-Output:
-```
-Black Market Status:
-- Event: Active
-- Current Item: #3/10
-- Time Left: 45s
-- Current Bid: $15,000
-- Total Bids: 23
-- Unique Bidders: 8
-```
-
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot of the /blackmarket status command output in chat. Dimensions: 500x200px -->
-
----
-
-## Bidding System
-
-### How to Bid
-
-1. Open the Black Market: `/blackmarket` or `/bm`
-2. View the current item
-3. Click to place your bid
-4. Enter your bid amount
-
-### Bid Rules
-
-- Bids must be higher than current bid + minimum increment
-- Players are notified when outbid
-- Winners receive items automatically
-- If inventory is full, items are dropped
-
-```yaml
-# Outbid notification
-BLACK_MARKET_OUTBID: "&6&l[BLACK MARKET] &e%player% &fhas outbid you with &a$%amount%&f!"
-
-# Winning notification  
-BLACK_MARKET_WIN: "&6&l[BLACK MARKET] &e&lCongratulations! &fYou won &a%item% &ffor &e$%amount%&f!"
-```
-
----
-
-## Full Moon Trigger
-
-Configure the Black Market to open during full moons:
-
-```yaml
-auto_open:
-  full_moon: true
-  # Additional settings for full moon events
-  full_moon_settings:
-    # Announce in advance
-    pre_announce: 300  # 5 minutes before
-    # Special items for full moon only
-    full_moon_only_items: true
-```
-
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot showing the full moon in Minecraft with Black Market announcement in chat. Dimensions: 600x400px -->
-
----
-
-## Rarity System
-
-Items have different rarities affecting their appearance:
-
-| Rarity | Color | Appearance Rate |
-|--------|-------|-----------------|
-| COMMON | &7 (Gray) | Very frequent |
-| UNCOMMON | &a (Green) | Frequent |
-| RARE | &b (Aqua) | Occasional |
-| EPIC | &5 (Purple) | Rare |
-| LEGENDARY | &6 (Gold) | Very rare |
-
-```yaml
-# Rarity weights for random selection
-rarity_weights:
-  COMMON: 40
-  UNCOMMON: 30
-  RARE: 20
-  EPIC: 8
-  LEGENDARY: 2
-```
-
----
-
-## Purchase Limits
-
-Prevent players from dominating the Black Market:
-
-```yaml
-limits:
-  # Max items per player per event
-  per_event: 3
-  # Max items per player per day
-  per_day: 5
-  # Cooldown between purchases (seconds)
-  cooldown: 60
-```
-
----
-
-## GUI Customization
-
-Customize the Black Market interface:
-
-```yaml
-gui:
-  title: '&8&l☠ &4&lBlack Market &8&l☠'
-  rows: 6
-  
-  # Item display slot
-  item_slot: 22
-  
-  # Bid button
-  bid_button:
-    slot: 40
-    material: GOLD_INGOT
-    name: '&e&lPlace Bid'
-    lore:
-      - '&7Current Bid: &a$%current_bid%'
-      - '&7Minimum: &e$%min_bid%'
-      - ''
-      - '&eClick to bid!'
-  
-  # Info display
-  info:
-    slot: 4
-    material: CLOCK
-    name: '&c&lTime Remaining'
-    lore:
-      - '&7%time% seconds'
-      - ''
-      - '&7Item: &f%item_number%/%total_items%'
+/blackmarket toggle auction    - Toggle auction mode
+/blackmarket toggle broadcast  - Toggle purchase broadcasts
+/blackmarket toggle autoopen   - Toggle auto-open GUI
 ```
 
 ---
@@ -267,29 +308,65 @@ gui:
 
 | Permission | Description | Default |
 |------------|-------------|---------|
-| `infiniteshops.blackmarket.use` | Access Black Market | true |
-| `infiniteshops.blackmarket.bid` | Place bids | true |
+| `infiniteshops.blackmarket.use` | Access the Black Market | true |
 | `infiniteshops.blackmarket.admin` | Admin commands | op |
+| `infiniteshops.blackmarket.bid` | Place bids in auctions | true |
+| `infiniteshops.blackmarket.*` | All Black Market permissions | op |
 
 ---
 
-## PlaceholderAPI
+## Placeholders
 
-Available placeholders for Black Market:
+Use these placeholders in messages:
 
 | Placeholder | Description |
 |-------------|-------------|
-| `%infiniteshops_blackmarket_active%` | Is event active (true/false) |
-| `%infiniteshops_blackmarket_timeleft%` | Time remaining |
-| `%infiniteshops_blackmarket_currentbid%` | Current highest bid |
-| `%infiniteshops_blackmarket_item%` | Current item name |
+| `%player%` | Player name |
+| `%amount%` | Bid/price amount |
+| `%item%` | Item name |
+| `%winner%` | Auction winner |
+| `%price%` | Starting price |
+| `%seconds%` | Time remaining |
+| `%currentBid%` | Current highest bid |
+| `%totalBids%` | Total number of bids |
+| `%uniqueBids%` | Number of unique bidders |
+
+---
+
+## Event Flow
+
+### Standard Mode (Non-Auction)
+
+1. Event starts → Items selected from pool based on weights
+2. Each item displays for `item_duration` seconds
+3. Players can purchase at fixed price
+4. If `skip_on_purchase: true`, moves to next item on purchase
+5. Event ends after all items shown
+
+### Auction Mode
+
+1. Event starts → First item put up for auction
+2. Players bid, each bid extends timer by `bid_reset_time`
+3. Anti-snipe adds time if bid in final seconds
+4. Highest bidder wins when timer expires
+5. Next item begins auction
+6. Event ends after all items auctioned
 
 ---
 
 ## Tips
 
-1. **Create exclusive items** - Make Black Market items special
-2. **Vary event times** - Keep players guessing
-3. **Balance starting bids** - Not too high, not too low
-4. **Use broadcasts** - Build excitement
-5. **Limit purchases** - Give everyone a chance
+1. **Balance item weights** - Ensure variety in each event
+2. **Set appropriate prices** - Consider server economy
+3. **Use anti-snipe** - Prevents last-second sniping in auctions
+4. **Limit wins per player** - Gives more players a chance
+5. **Broadcast purchases** - Creates FOMO and excitement
+6. **Test item configurations** - Verify all items work correctly
+
+---
+
+## Related Features
+
+- [Daily Shop](daily-shop.md) - Another rotating shop system
+- [Currencies](../economy/currencies.md) - Economy integration
+- [Multipliers](../economy/multipliers.md) - Price modifiers

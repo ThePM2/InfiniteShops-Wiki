@@ -6,260 +6,234 @@ Classic sign-based shops for quick and accessible trading!
 
 ## Overview
 
-Sign Shops provide a traditional Minecraft shop experience using signs. Players can interact with signs to buy or sell items without opening a GUI. Perfect for spawn shops, player markets, or quick-access trading posts.
+Sign Shops provide a traditional Minecraft shop experience using signs. Players interact with signs to buy or sell items without opening a GUI. Perfect for spawn shops, admin stores, or quick-access trading posts.
 
 <!-- 📸 IMAGE PLACEHOLDER: Screenshot showing multiple sign shops on a wall with different items and prices displayed. Dimensions: 800x400px -->
 
 ---
 
-## Sign Types
+## Admin Sign Types
 
-InfiniteShops supports multiple sign types:
+| Type | Identifier | Description |
+|------|------------|-------------|
+| `ADMIN_SHOP` | `Admin-Shop` | Buy and sell items |
+| `ADMIN_SELL` | `Admin-Sell` | Sell items only |
+| `ADMIN_BUY` | `Admin-Buy` | Buy items only |
+| `COMMAND` | `Command` | Execute free commands |
+| `COMMAND` | `Command-Shop` | Execute paid commands |
+| `FREE` | `Free` | Free item distribution |
+| `DISPOSAL` | `Disposal` | Trash bin |
+| `ENCHANT` | `Enchant` | Free enchanting |
+| `ENCHANT` | `Enchant-Buy` | Paid enchanting |
 
-| Type | Description | Example Use |
-|------|-------------|-------------|
-| `BUY` | Purchase items | Selling diamonds to players |
-| `SELL` | Sell items for money | Buying cobblestone from players |
-| `TRADE` | Exchange items | Trade 10 coal for 1 iron |
-| `COMMAND` | Execute commands | Grant permissions or ranks |
-| `ENCHANT` | Apply enchantments | Enchanting services |
-| `FREE` | Free items | Welcome kits |
-| `DISPOSAL` | Dispose of items | Trash bins |
-
-### Player Shop Types
-
-| Type | Description | Example Use |
-|------|-------------|-------------|
-| `PLAYER_SHOP` | Player-owned buy/sell | Player markets |
-| `PLAYER_BUY` | Player selling items | Selling to other players |
-| `PLAYER_SELL` | Player buying items | Buying from other players |
+> 💡 Looking for player-owned shops? See [Player Shops](player-shops.md)
 
 ---
 
-## Player Shops (Chest Shops)
+## Creating Sign Shops
 
-Allow players to create their own shops attached to chests!
+### Admin Shop (Buy & Sell)
 
-### Creating a Player Shop
-
-1. Place a chest
-2. Place a sign on the chest
-3. Write the sign format:
+Players can buy AND sell items:
 
 ```
-Chest-Shop
-<amount>
+Admin-Shop
+<amount> <material>
 s:<sellPrice> b:<buyPrice>
 <ecoType>
 ```
 
-**Example**:
+**Example:**
 ```
-Chest-Shop
-64
+Admin-Shop
+64 DIAMOND
 s:50 b:100
 VAULT
 ```
 
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot of a player-owned chest shop with sign showing prices. Dimensions: 500x350px -->
+- **Line 1**: `Admin-Shop` (identifier)
+- **Line 2**: Amount and material (e.g., `64 DIAMOND`)
+- **Line 3**: Sell price and buy price (e.g., `s:50 b:100`)
+- **Line 4**: Economy type (`VAULT`, `EXP`, or custom currency ID)
 
-### Player Shop Permissions
-
-| Permission | Description | Default |
-|------------|-------------|---------|
-| `infiniteshops.player.shop` | Create chest shops | true |
-| `infiniteshops.player.buy` | Create buy-only shops | true |
-| `infiniteshops.player.sell` | Create sell-only shops | true |
-
-### How It Works
-
-1. **Seller places chest** with items to sell
-2. **Sign displays** owner name and prices
-3. **Buyers click sign** to purchase
-4. **Money transfers** automatically to seller
-5. **Items transfer** from chest to buyer
-
-### Method 1: Using Commands
-
-1. Look at a wall sign
-2. Run the setup command:
-
-```
-/ishop sign create <type>
-```
-
-3. Configure the sign:
-
-```
-/ishop sign set material DIAMOND
-/ishop sign set buyPrice 100
-/ishop sign set ecoType VAULT
-```
-
-### Method 2: Direct Placement
-
-Place a sign with specific format:
-
-```
-[Shop]
-Diamond
-Buy: $100
-Sell: $50
-```
-
-<!-- 📸 GIF PLACEHOLDER: Animation showing the process of creating a sign shop from placing the sign to completion. Dimensions: 600x400px -->
+**Click Actions:**
+| Action | Result |
+|--------|--------|
+| Left Click | Sell items |
+| Right Click | Buy items |
+| Shift + Left Click | Sell all |
 
 ---
 
-## Sign Configuration
+### Admin Sell Only
 
-### Basic Buy/Sell Sign
-
-```yaml
-# Sign shop data (auto-generated)
-type: BUY
-material: DIAMOND
-amount: 1
-buyPrice: 100
-sellPrice: 50
-ecoType: VAULT
-```
-
-### Sign with Container
-
-Attach a chest to your sign shop for inventory:
-
-1. Place a sign on a chest/barrel
-2. Create the shop:
-```
-/ishop sign create BUY
-```
-3. The container's inventory will be used
-
-<!-- 📸 IMAGE PLACEHOLDER: Screenshot showing a sign shop attached to a chest with items flowing between them. Dimensions: 500x400px -->
-
-### Command Sign
-
-Execute commands on purchase:
+Players can only sell items to the shop:
 
 ```
-/ishop sign create COMMAND
-/ishop sign set buyPrice 1000
-/ishop sign command add lp user %player% permission set vip.access
-/ishop sign set commandExecutor CONSOLE
+Admin-Sell
+<amount> <material>
+s:<sellPrice>
+<ecoType>
 ```
+
+**Example:**
+```
+Admin-Sell
+32 IRON_INGOT
+s:10
+VAULT
+```
+
+**Click Actions:**
+| Action | Result |
+|--------|--------|
+| Left Click | Sell items |
+| Shift + Left Click | Sell all |
 
 ---
 
-## Sign Display
+### Admin Buy Only
 
-### Display Item
-
-Show a floating item above the sign:
+Players can only buy items from the shop:
 
 ```
-/ishop sign set displayItem DIAMOND
+Admin-Buy
+<amount> <material>
+b:<buyPrice>
+<ecoType>
 ```
 
-### Hologram Support
-
-If a hologram plugin is installed, text appears above signs:
-
-```yaml
-# In config.yml
-sign_shops:
-  hologram:
-    enabled: true
-    lines:
-      - '&b%material%'
-      - '&aBuy: &f%buyPrice%'
-      - '&cSell: &f%sellPrice%'
+**Example:**
+```
+Admin-Buy
+16 GOLD_INGOT
+b:25
+VAULT
 ```
 
-### Item Frame Display
+**Click Actions:**
+| Action | Result |
+|--------|--------|
+| Click | Buy items |
 
-Display items in an item frame attached to the sign:
+---
 
-```yaml
-sign_shops:
-  item_frame:
-    enabled: true
-    glow: true  # Glowing item frame (1.17+)
+## Command Signs
+
+### Free Command Sign
+
+Execute commands for free when clicked:
+
+```
+Command
+<executor>
+<display text>
+
+```
+
+**Example:**
+```
+Command
+CONSOLE
+&aFree Diamonds!
+
+```
+
+- **Line 2**: `CONSOLE` or `PLAYER` (who runs the command)
+- **Line 3**: Display text shown on the sign
+- **Line 4**: Leave empty
+
+After placing, add commands with:
+```
+/ishop sign command add give %player% diamond 1
 ```
 
 ---
 
-## Economy Options
+### Paid Command Sign
 
-### Vault Economy
-
-```
-/ishop sign set ecoType VAULT
-/ishop sign set buyPrice 100
-```
-
-### Experience
+Execute commands for a price:
 
 ```
-/ishop sign set ecoType EXP
-/ishop sign set buyPrice 30
-/ishop sign set level true  # Use levels instead of points
+Command-Shop
+<executor> <display text>
+b:<price>
+<ecoType>
 ```
 
-### Item Currency
-
+**Example:**
 ```
-/ishop sign set ecoType ITEM
-/ishop sign set buyPrice 5
-/ishop sign set currencyMaterial EMERALD
+Command-Shop
+CONSOLE &aVIP Kit
+b:1000
+VAULT
+```
+
+Then add the command:
+```
+/ishop sign command add lp user %player% parent set vip
 ```
 
 ---
 
-## Admin Commands
+## Free Item Signs
 
-| Command | Description |
-|---------|-------------|
-| `/ishop sign create <type>` | Create a new sign shop |
-| `/ishop sign set <option> <value>` | Set sign options |
-| `/ishop sign info` | View sign information |
-| `/ishop sign remove` | Remove sign shop |
-| `/ishop sign command add <cmd>` | Add command to sign |
-| `/ishop sign command remove <index>` | Remove command |
-| `/ishop sign command list` | List all commands |
+Give items to players for free:
 
-### Available Options
+```
+Free
+<material>
+<rows>
 
-| Option | Values | Description |
-|--------|--------|-------------|
-| `material` | Any material | Item being sold/bought |
-| `amount` | Number | Quantity per transaction |
-| `buyPrice` | Number | Price to buy |
-| `sellPrice` | Number | Price to sell |
-| `ecoType` | VAULT/EXP/ITEM/CUSTOM | Currency type |
-| `displayItem` | Any material | Item to display |
-| `level` | true/false | Use XP levels |
-| `commandExecutor` | PLAYER/CONSOLE | Who runs commands |
+```
+
+**Example:**
+```
+Free
+DIAMOND
+3
+
+```
+
+- **Line 2**: Material to give (e.g., `DIAMOND`)
+- **Line 3**: Number of inventory rows (1-6)
+
+This opens a GUI where players can take free items.
 
 ---
 
-## Disposal Signs
+## Free Item Sign (Custom Item)
 
-Create trash bins for players:
+Use an item from your hand:
 
 ```
-/ishop sign create DISPOSAL
+Free-Item
+<item>
+<rows>
+
 ```
 
-Configure disposal inventory:
-
-```yaml
-# In config.yml
-disposal:
-  rows: 3
-  title: '&8Disposal'
-  confirm_clear: true
+After placing, hold the item you want to give and run:
 ```
+/ishop sign set item
+```
+
+---
+
+## Disposal Sign
+
+Create a trash bin for players:
+
+```
+Disposal
+
+
+
+```
+
+Just write `Disposal` on line 1, leave the rest empty.
+
+Opens a disposal GUI where players can throw away unwanted items.
 
 <!-- 📸 IMAGE PLACEHOLDER: Screenshot of disposal inventory GUI with items being thrown away. Dimensions: 400x300px -->
 
@@ -267,110 +241,191 @@ disposal:
 
 ## Enchantment Signs
 
-Let players enchant items for a price:
+### Free Enchanting
+
+Apply enchantments for free:
 
 ```
-/ishop sign create ENCHANT
-/ishop sign set enchantment SHARPNESS
-/ishop sign set enchantmentLevel 5
-/ishop sign set buyPrice 5000
-/ishop sign set ecoType VAULT
+Enchant
+<enchantment>
+<level>
+<allow_any_item>
 ```
 
-When players interact:
-1. Holds an enchantable item
-2. Clicks the sign
-3. Enchantment is applied
-4. Payment is deducted
+**Example:**
+```
+Enchant
+SHARPNESS
+5
+false
+```
+
+- **Line 2**: Enchantment name (e.g., `SHARPNESS`, `UNBREAKING`)
+- **Line 3**: Enchantment level
+- **Line 4**: `true` = allow enchanting any item, `false` = only valid items
 
 ---
 
-## Free Item Signs
+### Paid Enchanting
 
-Give items for free:
+Charge for enchantments:
 
 ```
-/ishop sign create FREE
-/ishop sign set material BREAD
-/ishop sign set amount 16
+Enchant-Buy
+<enchantment> <level>
+b:<price>
+<allow_any_item> <ecoType>
 ```
 
-Configure free shop settings:
-
-```yaml
-free_shop:
-  rows: 3
-  title: '&aFree Items!'
-  cooldown: 3600  # 1 hour between claims
+**Example:**
+```
+Enchant-Buy
+SHARPNESS 5
+b:5000
+false VAULT
 ```
 
 ---
 
-## Sign Shop Permissions
+## Sign Appearance
 
-| Permission | Description | Default |
-|------------|-------------|---------|
-| `infiniteshops.sign` | Create/manage sign shops | op |
-| `infiniteshops.sign.use` | Use sign shops | true |
-| `infiniteshops.sign.bypass` | Bypass sign restrictions | op |
+After creation, signs transform to a formatted display:
+
+**Admin-Shop becomes:**
+```
+[Shop]
+64x DIAMOND
+Sell: 50 VAULT
+Buy: 100 VAULT
+```
+
+**Command becomes:**
+```
+[Command]
+
+Free Diamonds!
+
+```
+
+You can customize these formats in `signs.yml`.
+
+---
+
+## Sign Commands
+
+| Command | Description |
+|---------|-------------|
+| `/ishop sign create <type>` | Create sign by looking at it |
+| `/ishop sign set <property> <value>` | Set sign properties |
+| `/ishop sign command add <command>` | Add command to sign |
+| `/ishop sign command remove <index>` | Remove command by index |
+| `/ishop sign command list` | List commands on sign |
+| `/ishop sign info` | View sign information |
+
+---
+
+## Permissions
+
+| Permission | Description |
+|------------|-------------|
+| `infiniteshops.admin.shop` | Create Admin-Shop signs |
+| `infiniteshops.admin.sell` | Create Admin-Sell signs |
+| `infiniteshops.admin.buy` | Create Admin-Buy signs |
+| `infiniteshops.admin.command` | Create Command signs |
+| `infiniteshops.admin.free` | Create Free item signs |
+| `infiniteshops.admin.disposal` | Create Disposal signs |
+| `infiniteshops.admin.enchant` | Create Enchant signs |
+| `infiniteshops.sign` | General sign management |
+| `infiniteshops.sign.bypass` | Bypass sign protections |
 
 ---
 
 ## Configuration
 
-```yaml
-# In config.yml
+### signs.yml
 
-sign_shops:
-  # Enable sign shop feature
-  enabled: true
-  
-  # Sign text format
-  format:
-    line1: '&8[&aShop&8]'
-    line2: '&f%material%'
-    line3: '&aBuy: &f%buyPrice%'
-    line4: '&cSell: &f%sellPrice%'
-  
-  # Interaction sounds
-  sounds:
-    buy: ENTITY_EXPERIENCE_ORB_PICKUP
-    sell: ENTITY_EXPERIENCE_ORB_PICKUP
-    error: ENTITY_VILLAGER_NO
-  
-  # Container settings
-  container:
-    # Allow any container type
-    allow_all: true
-    # Allowed containers if allow_all is false
-    allowed:
-      - CHEST
-      - BARREL
-      - SHULKER_BOX
+Customize sign formats and behavior:
+
+```yaml
+# Split material names (DIAMOND_SWORD → Diamond Sword)
+split_materials_name: true
+
+# Display item above sign
+display_material_above_sign: true
+
+# Show actions in action bar
+display_actions_to_action_bar: true
+
+# Require confirmation before breaking
+require_confirmation_on_break: true
+
+# Action bar format
+actions_bar: '&f%identifier% &6%description% '
+
+# GUI titles
+free_title: '&aFree %material%'
+disposal_title: '&6Disposal'
+```
+
+### Enchantment Shortcuts
+
+Define shortcuts for long enchantment names:
+
+```yaml
+placeholders:
+  enchants:
+    unb: 'UNBREAKING'
+    eff: 'EFFICIENCY'
+    sharp: 'SHARPNESS'
+```
+
+Now you can use `unb` instead of `UNBREAKING` on signs.
+
+### Material Shortcuts
+
+Define shortcuts for materials:
+
+```yaml
+placeholders:
+  materials:
+    DIAMOND: 'DMD'
+    NETHERITE: 'NETH'
+```
+
+---
+
+## Item Display Offset
+
+Customize floating item position above signs:
+
+```yaml
+offset_item:
+  wall_x: 0.0625
+  wall_y: 0.8
+  wall_z: 0.0625
+  x: 0.5
+  y: 1.1
+  z: 0.5
 ```
 
 ---
 
 ## Tips
 
-1. **Use holograms** for better visibility
-2. **Attach containers** for automatic restocking
-3. **Create disposal bins** to reduce lag from item drops
-4. **Group related shops** together
-5. **Add command signs** for services like repairs
+> 💡 **Use shortcuts** to fit long names on signs (configure in signs.yml)
+
+> 💡 **Display items** appear floating above signs for easy identification
+
+> 💡 **Action bar** shows players what each click does
+
+> 💡 **Shift-click** to sell all matching items at once
+
+> 💡 **Test signs** in a private area before placing in public
 
 ---
 
-## Troubleshooting
+## See Also
 
-### Sign Not Working
-
-1. Verify you're looking at the sign when running commands
-2. Check permissions
-3. Ensure the sign type is valid
-
-### Container Not Linking
-
-1. The sign must be directly attached to the container
-2. Check container permissions
-3. Verify container is not empty (for sell shops)
+- [Player Shops](player-shops.md) - Player-owned chest shops
+- [Currencies](../economy/currencies.md) - Economy types
+- [Permissions](../commands-permissions/permissions.md) - All permissions
