@@ -14,6 +14,7 @@
 * [🌙 Black Market](features/black-market.md)
 * [📅 Daily Shop](features/daily-shop.md)
 * [🪧 Sign Shops](features/sign-shops.md)
+* [🏪 Player Shops](features/player-shops.md)
 * [👤 NPC Shops](features/npc-shops.md)
 * [🖼️ Frame Shops](features/frame-shops.md)
 * [🎰 Loot System](features/loot-system.md)
