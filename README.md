@@ -6,7 +6,7 @@
 
 ## What is InfiniteShops?
 
-InfiniteShops is a comprehensive shop management plugin for Minecraft servers running Spigot/Paper 1.20-1.21.x. It provides everything you need to create an immersive economy experience for your players.
+InfiniteShops is a comprehensive shop management plugin for Minecraft servers running Spigot/Paper 1.13-1.21.11. It provides everything you need to create an immersive economy experience for your players.
 
 Whether you want simple GUI shops, dynamic NPC merchants, sign-based trading, or exciting features like Black Markets and Daily Shops, InfiniteShops has you covered.
 
@@ -43,6 +43,13 @@ Whether you want simple GUI shops, dynamic NPC merchants, sign-based trading, or
 | Java        | 17+            |
 | ProtocolLib | Required       |
 | Vault       | Required       |
+
+### Dependencies
+
+* **ProtocolLib** — required for packet-based functionality
+* **Vault** — required for economy integration
+
+***
 
 ### Optional Dependencies
 
