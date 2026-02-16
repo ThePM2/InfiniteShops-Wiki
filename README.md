@@ -37,12 +37,12 @@ Whether you want simple GUI shops, dynamic NPC merchants, sign-based trading, or
 
 ## 📋 Requirements
 
-| Requirement | Version       |
-| ----------- | ------------- |
-| Minecraft   | 1.20 - 1.21.x |
-| Java        | 17+           |
-| ProtocolLib | Required      |
-| Vault       | Required      |
+| Requirement | Version        |
+| ----------- | -------------- |
+| Minecraft   | 1.13 - 1.21.11 |
+| Java        | 17+            |
+| ProtocolLib | Required       |
+| Vault       | Required       |
 
 ### Optional Dependencies
 
